@@ -4,7 +4,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "employees")
@@ -127,5 +129,25 @@ public class Employee {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s - %s%n\t%s",
+                this.getFirstName(),
+                this.getLastName(),
+                this.getJobTitle(),
+                this.getProjects().stream().
+                        sorted(Comparator.comparing(Project::getName)).
+                        map(Project::getName).
+                        collect(Collectors.joining("\n\t")));
+    }
+
+    public String salaryInfo() {
+        return String.format("%s %s - %s - ($%.2f)",
+                this.getFirstName(),
+                this.getLastName(),
+                this.getJobTitle(),
+                this.getSalary());
     }
 }
